@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using AirlineManagement.Entities
+
+@model List<Flight>
+@{
+    ViewBag.Title = "Available Flights";
+}
+
+<h2>Available Flights</h2>
+
+@if (Model.Any())
+{
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Flight Number</th>
+                    <th>Departure Location</th>
+                    <th>Arrival Location</th>
+                    <th>Departure Date</th>
+                    <th>Departure Time</th>
+                    <th>Available Seats</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var flight in Model)
+            {
+                        <tr>
+                            <td>@flight.FlightNumber</td>
+                            <td>@flight.Origin</td>
+                            <td>@flight.Destination</td>
+                            <td>@flight.DepartureDate.ToShortDateString()</td>
+                            <td>@flight.DepartureTime.ToShortTimeString()</td>
+                            <td>@flight.AvailableSeats</td>
+                            <td>
+                                <a asp-action="BookTicket" asp-route-flightId="@flight.Id" class="btn btn-success">Book Now</a>
+                            </td>
+                        </tr>
+            }
+            </tbody>
+        </table>
+}
+else
+{
+        <p>No flights found for the selected route.</p>
+}

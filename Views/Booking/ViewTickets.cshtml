@@ -1,0 +1,50 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using AirlineManagement.Entities
+
+@model List<Ticket>
+@{
+    ViewBag.Title = "My Tickets";
+}
+
+<h2>My Tickets</h2>
+
+@if (Model.Any())
+{
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Flight Number</th>
+                    <th>Departure Location</th>
+                    <th>Arrival Location</th>
+                    <th>Departure Date</th>
+                    <th>Departure Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var ticket in Model)
+            {
+                        <tr>
+                            <td>@ticket.TicketId</td>
+                            <td>@ticket.FlightNumber</td>
+                            <td>@ticket.DepartureLocation</td>
+                            <td>@ticket.ArrivalLocation</td>
+                            <td>@ticket.DepartureDate.ToShortDateString()</td>
+                            <td>@ticket.DepartureTime.ToShortTimeString()</td>
+                            <td>@(ticket.IsConfirmed ? "Confirmed" : "Pending")</td>
+                        </tr>
+            }
+            </tbody>
+        </table>
+}
+else
+{
+        <p>You have not booked any tickets yet.</p>
+}
+<div>
+    
+  Want to bbok another Ticket  <a asp-action="SearchFlights">Book Ticket</a>
+</div>

@@ -1,0 +1,113 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using AirlineManagement.Entities
+
+@model AirlineManagement.Models.SearchFlightViewModel
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Search Flights</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="SearchFlights" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="DepartureLocation" class="form-label">Departure Location</label>
+                            <input asp-for="DepartureLocation" class="form-control" placeholder="Enter city name (e.g., New York)" />
+                            <span asp-validation-for="DepartureLocation" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ArrivalLocation" class="form-label">Arrival Location</label>
+                            <input asp-for="ArrivalLocation" class="form-control" placeholder="Enter city name (e.g., Los Angeles)" />
+                            <span asp-validation-for="ArrivalLocation" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Search Flights</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @if (Model.AvailableFlight != null && Model.AvailableFlight.Any())
+            {
+                <div class="card mt-4">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">Available Flights</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Flight No.</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Seats</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var flight in Model.AvailableFlight)
+                                    {
+                                        <tr>
+                                            <td>@flight.FlightNumber</td>
+                                            <td>@flight.Origin</td>
+                                            <td>@flight.Destination</td>
+                                            <td>@flight.DepartureDate.ToShortDateString()</td>
+                                            <td>@flight.DepartureTime.ToShortTimeString()</td>
+                                            <td>@flight.AvailableSeats</td>
+                                            <td>
+                                                <a asp-action="BookTicket" 
+                                                   asp-route-flightNumber="@flight.FlightNumber" 
+                                                   class="btn btn-success btn-sm">
+                                                    Book Now
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(Model.DepartureLocation) && !string.IsNullOrEmpty(Model.ArrivalLocation))
+            {
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    No flights available for the selected route. Please try different locations or dates.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Convert input to title case as user types
+        function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        }
+
+        document.getElementById('DepartureLocation').addEventListener('input', function(e) {
+            this.value = toTitleCase(this.value);
+        });
+
+        document.getElementById('ArrivalLocation').addEventListener('input', function(e) {
+            this.value = toTitleCase(this.value);
+        });
+    </script>
+}
